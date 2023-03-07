@@ -9,11 +9,14 @@ services:
       target: development
     depends_on:
       - redis
+      - postgres
     volumes:
       - .:/app
       - ./app/node_modules # This is the only change
     env_file:
       - .env
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?schema=public
     # Run a command against the development stage of the image
     command: npm run start:dev
     ports:
@@ -26,6 +29,19 @@ services:
     volumes:
       - redis:/data
 
+  postgres:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - '5432:5432'
+    volumes:
+      - docker-nest-postgres:/var/lib/postgresql/data
+
 volumes:
   redis:
     driver: local
+  docker-nest-postgres:
