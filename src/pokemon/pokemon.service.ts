@@ -10,7 +10,6 @@ export class PokemonService {
   ) {}
 
   async getPokemon(id: number): Promise<string> {
-    console.log(process.env);
     // check if data is in cache
     const cacheData = await this.cacheService.get<{
       name: string;
